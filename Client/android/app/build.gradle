@@ -5,6 +5,21 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// ── release 签名 ────────────────────────────────────────────────────────────
+// 证书与口令放在 android/key.properties（**已被 .gitignore 忽略**，不进仓库）。
+//
+// 【为什么一定要留 fallback】仓库里**没有**这个文件。任何人 clone 下来都应该
+// 能直接构建，所以文件不存在时退回 Flutter 模板的 debug 密钥 —— 能装能跑，
+// 只是"作者证书签出来的正式包"只在作者本机产出。
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+def hasReleaseKeystore = keystorePropertiesFile.exists()
+if (hasReleaseKeystore) {
+    keystorePropertiesFile.withReader("UTF-8") { reader ->
+        keystoreProperties.load(reader)
+    }
+}
+
 android {
     namespace = "com.ns_zzj.dsh_webview_remote_client"
     compileSdk = flutter.compileSdkVersion
@@ -39,11 +54,25 @@ android {
         versionName = flutter.versionName
     }
 
+    // ── 签名配置 ─────────────────────────────────────────────
+    // ⚠️ storeType 必须显式写 PKCS12：作者的证书是 .p12，不写这行 Gradle 会按
+    //    默认的 JKS 去解，直接报 keystore 格式错。
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            release {
+                storeFile file(keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+                storeType keystoreProperties["storeType"] ?: "PKCS12"
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            // 有 key.properties → 用作者证书；没有 → 退回 debug 密钥（见文件顶部说明）。
+            signingConfig = hasReleaseKeystore ? signingConfigs.release : signingConfigs.debug
         }
     }
 }
