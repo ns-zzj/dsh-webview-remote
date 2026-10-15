@@ -1,0 +1,124 @@
+name: dsh_webview_remote_client
+description: "DSH 远程客户端：输一次密码建立连接，之后在 WebView 里直接用 DSH 的 Web UI。"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  webview_flutter:
+    git:
+      url: https://gitcode.com/CPF-Flutter/flutter_packages.git
+      path: packages/webview_flutter/webview_flutter
+      ref: master
+
+  # 凭据存储。**两个都要装**：
+  #   flutter_secure_storage      —— 应用层 API；它的 android 实现是内联的
+  #   flutter_secure_storage_ohos —— 提供**鸿蒙原生实现**（platforms.ohos.pluginClass）
+  #
+  # 为什么这样就够了（不需要像 webview_flutter 那样配 default_package）：
+  # 这是**老式联邦插件** —— 平台接口里 _instance 默认就是
+  # MethodChannelFlutterSecureStorage()，所以 Dart 侧不用注册，
+  # 只要原生插件注册上就行，而那由 ohos 包 pubspec 里的 platforms.ohos 完成。
+  #
+  # 用的分支是 br_v9.2.4_ohos（6 个月前），SDK 约束 >=2.12.0 <4.0.0 → Dart 3 可用。
+  # ⚠️ 别用 master 那份：2 年前的，约束 >=2.12.0 <3.0.0，Dart 3 直接装不上。
+  flutter_secure_storage:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage
+      ref: br_v9.2.4_ohos
+
+  flutter_secure_storage_ohos:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage_ohos
+      ref: br_v9.2.4_ohos
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 依赖来源：OpenHarmony 适配版全部走 git（见下面每一处 git: 块）。
+#
+# 为什么不走 pub.dev：pub.dev 上的 flutter_secure_storage_ohos 1.0.0 声明
+#   sdk ">=2.19.6 <3.0.0"，Dart 3 装不上它。
+#
+# 想改用自己本地的 checkout：把 git: 块换回 path: 即可（作者开发时就是这么做的）。
+# ─────────────────────────────────────────────────────────────────────────────
+dependency_overrides:
+  webview_flutter_ohos:
+    git:
+      url: https://gitcode.com/CPF-Flutter/flutter_packages.git
+      path: packages/webview_flutter/webview_flutter_ohos
+      ref: master
+
+  webview_flutter_android:
+    git:
+      url: https://gitcode.com/CPF-Flutter/flutter_packages.git
+      path: packages/webview_flutter/webview_flutter_android
+      ref: master
+
+  webview_flutter_wkwebview:
+    git:
+      url: https://gitcode.com/CPF-Flutter/flutter_packages.git
+      path: packages/webview_flutter/webview_flutter_wkwebview
+      ref: master
+
+  webview_flutter_platform_interface:
+    git:
+      url: https://gitcode.com/CPF-Flutter/flutter_packages.git
+      path: packages/webview_flutter/webview_flutter_platform_interface
+      ref: master
+
+  flutter_secure_storage:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage
+      ref: br_v9.2.4_ohos
+
+  flutter_secure_storage_ohos:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage_ohos
+      ref: br_v9.2.4_ohos
+
+  flutter_secure_storage_platform_interface:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage_platform_interface
+      ref: br_v9.2.4_ohos
+
+  flutter_secure_storage_linux:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage_linux
+      ref: br_v9.2.4_ohos
+
+  flutter_secure_storage_macos:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage_macos
+      ref: br_v9.2.4_ohos
+
+  flutter_secure_storage_web:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage_web
+      ref: br_v9.2.4_ohos
+
+  flutter_secure_storage_windows:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_flutter_secure_storage.git
+      path: flutter_secure_storage_windows
+      ref: br_v9.2.4_ohos
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,53 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "com.ns_zzj.dsh_webview_remote_client"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        // 包名与鸿蒙的 bundleName 保持一致（都是 com.ns_zzj.dsh_webview_remote_client），
+        // 免得两个平台认成两个应用。
+        applicationId = "com.ns_zzj.dsh_webview_remote_client"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        // minSdk：**故意不写 flutter.minSdkVersion（那是 21）**。
+        //
+        // 21 = Android 5.0，对本 App 是句空话：真正的门槛是 WebView 内核 114，
+        // 而各 Android 版本能拿到的最高 WebView 是有限的（已查证）：
+        //   · Android 6.0 (API 23) 封顶 Chrome/WebView 106 → 够不到 114
+        //   · Android 7.0 (API 24) 封顶 119 → 114 在范围内 ✓
+        // 所以 24 才反映真实门槛。写 21 只会让 Android 5/6 的用户装上一个
+        // 注定打不开的 App，而且那个版本检查只在 console 里提示，用户看不到。
+        minSdk = 24
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@nszzj/dsh-webview-remote-server",
+  "version": "1.0.1",
+  "description": "A password-protected LAN entry point for DSH — an authenticated reverse proxy plus a Settings panel, so a phone or tablet can use your DSH over the local network. Companion client: github.com/ns-zzj/dsh-webview-remote",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./client/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "client",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "webview",
+    "remote",
+    "proxy"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ]
+    }
+  }
+}

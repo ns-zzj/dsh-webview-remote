@@ -1,0 +1,24 @@
+allprojects {
+    repositories {
+        // 【已实测】maven.google.com 在本机不通（flutter doctor 报超时，TCP 443 探测 False），
+        // 官方仓库拉不到 AGP / Kotlin / AndroidX，所以换成阿里云镜像。
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        // 想改回官方源时，把上面三行换成下面两行：
+        // google()
+        // mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}

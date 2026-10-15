@@ -1,0 +1,50 @@
+
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "description": "$string:EntryAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:icon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "requestPermissions": [
+      {"name" :  "ohos.permission.INTERNET"},
+      // 少了这一条，ArkWeb 的 navigator.onLine 会**恒定为 false**（不是报错、不是
+      // 打日志、不是"权限不足"，就是直接答"没有网"）—— 而页面其实连得好好的。
+      // DSH 客户端的连接循环看到"没网"就按设计一直等，于是永远不建连接、
+      // 不请求 $events、不报错、不重试，界面永远"连接异常"，必须手点一次重连。
+      //
+      // 该权限是 normal 级 + system_grant：**声明即授予，不需要运行时申请、不弹窗**。
+      // 依据：OpenHarmony 官方权限清单 permissions-for-all.md（Valid since: 8）。
+      // 排查记录见仓库根目录「鸿蒙ArkWeb-onLine错报-调查报告.md」。
+      {"name" :  "ohos.permission.GET_NETWORK_INFO"},
+    ]
+  }
+}

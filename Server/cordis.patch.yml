@@ -1,0 +1,22 @@
+# dsh-webview-remote-server bundle patch
+#
+# 通过插件面板 / 官方 CLI 安装时（dsh plugin --profile <name> add @nszzj/dsh-webview-remote-server），
+# 安装器会把本包追加进 dsh.profile.bundles 并在启动时合并本补丁，
+# 等价于手工在 profile 的 cordis.patch.yml 里挂载一行：
+#
+#   - insert:
+#       - id: webview-remote-server
+#         name: '@nszzj/dsh-webview-remote-server'
+#
+# ⚠️ `id` 与 `name` 是**两个不同的东西**，别写成一个（照 dsh-scrcpy 三个包的写法）：
+#     · id   —— 短名、**不带 scope**，只在本组合树里要求唯一；
+#              两条同 id 的条目会被 EntryGroup.update 以 `duplicate loader entry id`
+#              拒绝、启动直接失败。
+#     · name —— 是 npm 包名，**必须带 scope**，装载器用它去 import。
+#
+# 单包单插件，无配置项（配置走 $DSH_HOME 下的配置文件，见 lib/index.js，
+# 目录名仍是 `webview-remote-server`，**没有跟着包名加 scope** ——
+# 磁盘目录名不必背一个 @ 前缀）。
+- insert:
+    - id: webview-remote-server
+      name: "@nszzj/dsh-webview-remote-server"

@@ -1,0 +1,56 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 本 App 本质是个网络客户端：要向网关发 HTTP 请求。
+         Flutter 模板只在 debug/profile 的清单里加 INTERNET，release 里没有 ——
+         所以这里显式加上，免得以后正式打包才发现不能用。 -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
+        android:label="DSH WebView 远程客户端"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
+        <!-- usesCleartextTraffic="true" 是必须的：
+             我们的网关走 http://<内网IP>:<端口>，而 Android 从 API 28 起
+             默认禁止应用的明文 HTTP 流量（WebView 同样受限）。
+             不开这项，HttpClient 会抛 "Cleartext HTTP traffic not permitted"，
+             WebView 也打不开 —— 但系统浏览器却正常，症状很容易误判。
+             （OHOS 那侧对应的是 app.json5 里的 app.network.cleartextTraffic） -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>

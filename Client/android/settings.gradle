@@ -1,0 +1,38 @@
+pluginManagement {
+    def flutterSdkPath = {
+        def properties = new Properties()
+        file("local.properties").withInputStream { properties.load(it) }
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        return flutterSdkPath
+    }()
+
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    repositories {
+        // 同上：maven.google.com 不通，换阿里云镜像
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+    }
+}
+
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    // AGP 从模板带的 8.1.0 升到 8.5。
+    //
+    // 为什么必须升：AGP < 8.2.1 在同时满足「设置了 SourceCompatibility」和
+    // 「用 Java 21 或更高」时会构建失败 —— 已知上游 bug
+    // （Google issue 294137077、Flutter issue 156304），不是我们代码的问题。
+    //
+    // 为什么是 8.5 线而不是刚好修好的 8.2.1：用户要求取更稳的版本。
+    // 注意 AGP 的版本号是**三段式**：写 `8.5` 会解析失败（已实测），
+    // 8.5 这条线只有 8.5.0 / 8.5.1 / 8.5.2，这里取最新补丁 8.5.2。
+    // 兼容性刚好满足、不是碰运气：
+    //   · AGP 8.5 要求 Gradle 8.7+  → 本工程用的正是 Gradle 8.7（D 盘本地那套）
+    //   · AGP 8.5 要求 JDK 17+      → 本工程钉的是 JDK 21
+    id "com.android.application" version "8.5.2" apply false
+    id "org.jetbrains.kotlin.android" version "1.8.22" apply false
+}
+
+include ":app"
