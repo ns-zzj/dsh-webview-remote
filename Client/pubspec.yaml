@@ -1,7 +1,7 @@
 name: dsh_webview_remote_client
 description: "DSH 远程客户端：输一次密码建立连接，之后在 WebView 里直接用 DSH 的 Web UI。"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.6.2
