@@ -1,6 +1,6 @@
 # dsh-webview-remote
 
-**Safely connect to the DSH on your computer from a phone app.**
+**Safely connect to your DSH from a phone app.**
 
 *[中文版](README.zh.md)*
 

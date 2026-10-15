@@ -1,6 +1,6 @@
 # @nszzj/dsh-webview-remote-server
 
-**A password-protected LAN entry point for DSH** — let a phone or tablet use the DSH running on your computer, without exposing it to the internet.
+**A password-protected LAN entry point for DSH** — let a phone or tablet use your DSH over the LAN, without exposing it to the internet.
 
 DSH itself only talks to the local machine: its web server binds to loopback and it checks where requests come from. This plugin stands in the middle. The phone connects to the plugin's port, clears one password, and the plugin knocks on DSH's door **carrying DSH's own launch token**.
 
