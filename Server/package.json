@@ -1,6 +1,6 @@
 {
   "name": "@nszzj/dsh-webview-remote-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A password-protected LAN entry point for DSH — an authenticated reverse proxy plus a Settings panel, so a phone or tablet can use your DSH over the local network. Companion client: github.com/ns-zzj/dsh-webview-remote",
   "type": "module",
   "main": "lib/index.js",
