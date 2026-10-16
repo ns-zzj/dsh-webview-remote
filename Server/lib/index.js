@@ -276,7 +276,7 @@ function boot(ctx, webCtx) {
             })
 
           case 'remote.config.get':
-            // 明文密码按【用户要求】存在配置文件里，这里如实回给客户端半区
+            // 明文密码就存在配置文件里，这里如实回给客户端半区
             return ok({ password: config.password, port: config.port })
 
           case 'remote.config.set': {

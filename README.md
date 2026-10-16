@@ -40,7 +40,7 @@ phone ──(one password)──▶ Server, listening on 0.0.0.0:<port>
 | **Zero exposure by default** | With no password set, the plugin **does not listen at all** (not "listening and rejecting" — it never calls `listen`). |
 | **Plain HTTP** | The password and all traffic can be sniffed on the LAN. **Do not enable this on an untrusted network** (cafés, hotels, guest Wi-Fi). |
 | **Never map it to the internet** | No port forwarding, no frp, no ngrok. |
-| **No management surface** | A remote client cannot see DSH's Models settings page, and cannot change this plugin's configuration. |
+| **No management surface** | A remote client cannot see DSH's Models settings page, and this plugin's configuration form only renders on the local machine — a **UI gate**, not a security boundary. |
 
 ## Repository layout
 

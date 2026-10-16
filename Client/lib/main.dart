@@ -2,7 +2,7 @@
 // dsh_webview_remote_client —— DSH WebView 远程客户端（显示名见 kAppTitle）
 //
 // 三个阶段：
-//   choosing  有保存的凭据 → 让用户选「用保存的连」还是「重新输入」
+//   choosing  有保存的凭据 → 选「用保存的连」还是「重新输入」
 //   form      手输地址 + 密码
 //   web       连上后在 WebView 里用 DSH 的 Web UI，顶部一条自己的栏：
 //               左上「调试」→ 内核版本、垫片补了哪些 API、连接地址、当前 URL
@@ -52,7 +52,7 @@ const String kGatewayCookieName = 'dsh-gw';
 
 /// App 显示名。桌面图标名、页面标题、App 内标题**统一用这一个**。
 ///
-/// 【用户要求】显示名统一成 "DSH WebView 远程客户端"。
+/// 显示名统一成 "DSH WebView 远程客户端"。
 /// 改名字时平台侧那几处没法共用这个常量，要一起改：
 ///   · app/android/app/src/main/AndroidManifest.xml 的 android:label
 ///   · app/ohos/AppScope/resources/base/element/string.json 的 app_name
@@ -86,7 +86,7 @@ String kClientPlatformTag() {
 // ────────────────────────────────────────────────────────────
 // 界面文案（中 → 英）
 //
-// 【用户口述的要求】语言改成起始页上的手动按钮，不跟随系统。
+// 语言改成起始页上的手动按钮，不跟随系统。
 //
 // 做法：**中文原文直接当键**（gettext 那种）。为什么这样：
 //   · 不用为二十多条文案再起二十多个键名；
@@ -167,7 +167,7 @@ const String kStoreRemember = 'remember_credentials';
 
 /// 界面语言（`'zh'` / `'en'`）。
 ///
-/// 【用户口述的要求】语言由起始页上的按钮手动切，**连上之后不给切** ——
+/// 语言由起始页上的按钮手动切，**连上之后不给切** ——
 /// 所以它不是"跟随系统"，也不该去读系统语言。
 ///
 /// 【AI 提的方案】塞进凭据存储：它**不是秘密**，但为了一个字符串再引一个
@@ -177,7 +177,7 @@ const String kStoreLanguage = 'ui_language';
 /// 连接与请求超时。
 ///
 /// 为什么必须有（实测）：服务端没起来时，如果防火墙把包**静默丢掉**而不是回 RST，
-/// TCP 层要等自己那套重传/超时才失败 —— 体感 20 秒以上，用户看到的就是
+/// TCP 层要等自己那套重传/超时才失败 —— 体感 20 秒以上，看到的就是
 /// "卡很久才报错"。见 `_connect` 里的说明。
 const Duration _kConnectTimeout = Duration(seconds: 8);
 
@@ -226,7 +226,7 @@ const Duration _kThrottle = Duration(milliseconds: 120);
 /// 1) **孤立跳变 → 立刻提交。** 旋转属于这种：系统一次性把新尺寸给过来，中间没有
 ///    连串变化。（**这一条是推断，我还没实测验证。**）
 ///    早先不分情况一律防抖，于是旋转被白白拖了一个 settle 时长 ——
-///    用户的原话是「动画播完了还要卡一段时间才会动」。
+///    实测现象：「动画播完了还要卡一段时间才会动」。
 /// 2) **连串变化 → 按节流提交。** 键盘弹出那种逐帧变化：开头立刻提交一次
 ///    （所以尺寸在动画一开始就跟着变），中间的抖动合并掉，最后再补一次保证落地。
 ///
@@ -461,7 +461,7 @@ class _ConnectPageState extends State<ConnectPage> {
       // 为什么必须有这一步（这是个真实 bug，已实测）：
       //   `_savedAddress/_savedPassword` 原本**只在启动时**由 _restoreCredentials()
       //   赋值。首次使用的情况下启动时存储是空的 → 这两个变量一直是 ''。
-      //   用户手输并连上后，存储写进去了，但内存没同步；
+      //   手动输入并连上后，存储写进去了，但内存没同步；
       //   这时点【退出】——_disconnect() 用这两个变量判断"有没有存过凭据"，
       //   算出 false → 落到**空密码的表单页**，
       //   看起来就像"退出把登录凭据删了"，其实存储里那份好好的。
@@ -484,7 +484,7 @@ class _ConnectPageState extends State<ConnectPage> {
     await _connect();
   }
 
-  /// choosing 页：改为手工输入。只保留地址，密码让用户重新打。
+  /// choosing 页：改为手工输入。只保留地址，密码要重新输入。
   void _reenter() {
     setState(() {
       _stage = _Stage.form;
@@ -520,7 +520,7 @@ class _ConnectPageState extends State<ConnectPage> {
   // 连接
   // ────────────────────────────────────────────────────────────
 
-  /// 把用户输入收敛成一个可用的 base URL。接受 "192.168.1.110:8080" 这种省 scheme 的写法。
+  /// 把输入收敛成一个可用的 base URL。接受 "192.168.1.110:8080" 这种省 scheme 的写法。
   String _normalizeBase(String raw) {
     var text = raw.trim();
     if (text.isEmpty) return '';
@@ -581,7 +581,7 @@ class _ConnectPageState extends State<ConnectPage> {
     //
     // 为什么必须加（实测）：服务端没起来时，如果防火墙把包**静默丢掉**而不是回
     // RST，TCP 层要等自己那套重传/超时（实测体感 20 秒以上）才失败 ——
-    // 用户看到的就是"卡很久才报错"。
+    // 看到的就是"卡很久才报错"。
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 8);
     try {
       // ── 1) 用请求头换网关 cookie ─────────────────────────────
@@ -768,7 +768,7 @@ class _ConnectPageState extends State<ConnectPage> {
   /// 为什么直接调 showLicensePage 就够、不用自己列一张表：
   /// Flutter 打包时会把**依赖图里每个包的 LICENSE** 汇总成 NOTICES 随产物发出
   /// （实测：APK 与 HAP 的 flutter_assets 下都有 NOTICES.Z），运行时由
-  /// LicenseRegistry 读出来。所以这里只是**给用户一个入口** ——
+  /// LicenseRegistry 读出来。所以这里只是**给一个入口** ——
   /// 文本早就在包里了，之前只是没人能点到。
   ///
   /// 【未验证】页面自身的框架文字（"Licenses"、"VIEW LICENSES" 之类）目前是英文：
@@ -910,8 +910,8 @@ class _ConnectPageState extends State<ConnectPage> {
     _persistLanguage();
   }
 
-  /// 语言**切换就立刻落盘**（不是连上才写 —— 用户可能切完就退出 App）。
-  /// 写失败只记日志，不打扰用户：语言存不住是小事，不值得弹错。
+  /// 语言**切换就立刻落盘**（不是连上才写 —— 可能切完就退出 App）。
+  /// 写失败只记日志、不弹错：语言存不住是小事，不值得弹错。
   Future<void> _persistLanguage() async {
     try {
       await kCredentialStore.write(key: kStoreLanguage, value: _lang);
@@ -978,7 +978,7 @@ class _ConnectPageState extends State<ConnectPage> {
         : Text(tr('连接'), style: const TextStyle(fontSize: 16));
   }
 
-  /// choosing 阶段：有保存的凭据，让用户选。
+  /// choosing 阶段：有保存的凭据，让选。
   Widget _buildChoosing() {
     return Scaffold(
       // 署名钉在页面最底部。用 Scaffold 自己的底栏位，不必重排 body 的嵌套结构。

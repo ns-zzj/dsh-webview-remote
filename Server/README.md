@@ -38,7 +38,7 @@ DSH itself only talks to the local machine: its web server binds to loopback and
 | **Plain HTTP** | The password and all traffic can be sniffed on the LAN. **Do not enable this on an untrusted network** (cafés, hotels, guest Wi-Fi). |
 | **Never map it to the internet** | No port forwarding, no frp, no ngrok, nothing of that kind. |
 
-**The management surface.** A remote client **cannot see** the Models settings page and its like. That is DSH's own behaviour: when the page hostname is not a loopback address, DSH's settings mirror enters an "unavailable" state. This plugin's own configuration panel behaves the same way — **it only renders the form when DSH is running on the local machine.**
+**The management surface.** A remote client **cannot see** the Models settings page and its like. That is DSH's own behaviour: when the page hostname is not a loopback address, DSH's settings mirror enters an "unavailable" state. This plugin's own configuration panel behaves the same way — **it only renders the form when DSH is running on the local machine.** That is a UI gate, not access control; see the note under Known limitations.
 
 ---
 
@@ -106,7 +106,7 @@ $DSH_HOME/webview-remote-server/
 - **Plain HTTP.** Moving to HTTPS means a self-signed certificate plus installing a CA on the phone — this plugin does not do that for you
 - **The platform column depends on the client reporting it.** The client app always does; anything you write yourself may not
 - **Host-side changes require fully quitting and reopening DSH.** Browser-side changes only need a page refresh
-- **A remote client cannot change the configuration** — the panel only renders the form when DSH is on the local machine
+- **The configuration form only renders on the local machine — that is a UI gate, not access control.** The RPC endpoints behind it are open to any connected client, so a remote one can change the password or port by calling them directly. It is not a privilege escalation — a remote client is already authenticated and can run commands on the host — but it **can lock you out**. Do not mistake a hidden form for a boundary
 - **Failed authentications are not recorded** in the history
 
 ---

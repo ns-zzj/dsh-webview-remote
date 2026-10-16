@@ -151,7 +151,7 @@ function makeSigner(password, sessionDays) {
   }
 }
 
-// 【用户要求】这里**没有网页登录页**。
+// 这里**没有网页登录页**。
 //
 // 这个端口只负责 App（机器对机器）通信，**不负责给浏览器显示任何东西** ——
 // 无凭据的直接 GET 就是"没有东西"：最小的 401，正文不携带页面。
@@ -518,13 +518,13 @@ const MOBILE_ENTER_SHIM = `<script>
     //
     // 早先的实现用 document.execCommand('insertLineBreak' / 'insertText') 直接改 DOM。
     // 这么做绕过了 DSH 自己的状态管理：它下一次重绘时按自己的状态把内容写回去，
-    // 结果是**用户刚打的字整段消失**（手机上实测到的就是这个）。
+    // 结果是**刚打的字整段消失**（手机上实测到的就是这个）。
     //
     // 现在改成：合成一个 shiftKey=true 的 Enter 交给页面，让 **DSH 自己的多行
     // 代码路径**去插入。它自己插的内容，它自己的状态自然是一致的。
     //
     // 失败模式也更安全：如果页面根本不看 keydown（或不用 Shift+Enter 表示换行），
-    // 最坏结果只是"回车没反应"，**不会吃掉用户打的内容**。
+    // 最坏结果只是"回车没反应"，**不会吃掉已输入的内容**。
     var before = snapshot(el);
 
     var fake = new KeyboardEvent('keydown', {
@@ -1491,7 +1491,7 @@ export function createGateway(options) {
 
     upstream.on('error', (error) => {
       // 上游连不上，最常见的唯一原因就是「**DSH 本体没在运行**」。
-      // 单独把它说清楚：否则客户端只拿到一个笼统的 502，用户完全无从下手
+      // 单独把它说清楚：否则客户端只拿到一个笼统的 502，完全无从下手
       //（实测症状：服务端没起来时，客户端那边一直转圈、看不出究竟）。
       const refused = error.code === 'ECONNREFUSED'
       const message = refused
@@ -1525,7 +1525,7 @@ export function createGateway(options) {
   // WebSocket 在插件构造时就建好了，所以 `workspace/follow` 先出去了、
   // `$events` 没有。表现就是"第一次连接异常、手动点重连才好"。
   //
-  // 修法按用户说的办：**等所有零件装好再连接**。
+  // 修法：**等所有零件装好再连接**。
   // 网关看不见客户端的 loader，所以用"页面启动窗口"近似：把**页面刚发出去之后
   // 这段窗口内**的第一次 mux 升级压住，等窗口过去再放行。
   // 窗口之外的升级（真正的重连）一律不拦。
@@ -1544,7 +1544,7 @@ export function createGateway(options) {
    * packages/api/gateway/src/client/index.ts），从实测日志看它明显晚于 3 秒，
    * 所以 3 秒的窗口根本不够：socket 照样先开，第一条流照样是 workspace/follow。
    *
-   * 用户从一开始的判断就是对的：这是加载时机问题 —— 安卓加载快、
+   * 判断从一开始就是对的：这是加载时机问题 —— 安卓加载快、
    * 或者顺序不同，所以它从来不出事。
    *
    * ⚠️ 注意：这是网关侧的兜法，只在**页面刚发出去的窗口内**生效；
@@ -1572,7 +1572,7 @@ export function createGateway(options) {
   // 界面就一直"连接异常"、也没有会话。而**手动点一次"重连"之后一定能建立**
   //（手机端多次实测，日志里有完整帧序列）。
   //
-  // 所以这里替用户点那一下：mux 建立后等 MUX_HEALTH_CHECK_MS，
+  // 所以这里主动补点那一下：mux 建立后等 MUX_HEALTH_CHECK_MS，
   // 若客户端上行仍低于 MUX_HEALTH_MIN_BYTES（断言它没开出逻辑流），
   // 就主动断开这条 socket，让客户端走它自己那条已验证有效的重连路径。
   //
@@ -1913,7 +1913,7 @@ export function createGateway(options) {
       if (!authed) {
         // 无凭据 = **看起来这个路径根本不存在**。
         //
-        // 【用户要求】这里返回 **404**，不是 401 ——
+        // 这里返回 **404**，不是 401 ——
         //   401 本身就在说"这儿有个需要认证的东西"，那也是一条指纹；
         //   404 则和"随便哪个 HTTP 服务上不存在的路径"长得一模一样。
         // 正文同样为空。
@@ -1921,7 +1921,7 @@ export function createGateway(options) {
         // 注意：`/__gateway/session` 那处**仍然返回 401** —— App 靠它区分
         // "密码不对"。那条路径要猜（`__gateway/session`），不构成入口指纹。
         //
-        // 【用户原则】降低可发现性是有效的防御层次，但它**买的是时间、不是边界**：
+        // 降低可发现性是有效的防御层次，但它**买的是时间、不是边界**：
         // 一旦被找到这层就归零，所以密码强度与传输加密（TLS）仍然必须到位。
         res.writeHead(404, { 'content-length': '0', 'cache-control': 'no-store' })
         res.end()
