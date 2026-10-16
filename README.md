@@ -28,8 +28,9 @@ phone ──(one password)──▶ Server, listening on 0.0.0.0:<port>
 1. **Install the plugin** — from DSH's plugin panel, install `@nszzj/dsh-webview-remote-server`
 2. **Settings → "WebView Remote"** — set an access password and a listen port, then Save.
    The status line should read "**Listening on 0.0.0.0:<port>**"
-3. **Install the app** — download the app from [Releases](../../releases/latest);
-   or simply open `http://<your computer's LAN IP>:<port>/` in a phone browser and enter the password
+3. **Install the app** — download it from [Releases](../../releases/latest) and enter the same
+   address and password there. (A phone browser cannot get in: the password goes in a request
+   header, and there is no login page.)
 
 ## ⚠️ Security — read this before turning it on
 

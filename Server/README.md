@@ -4,9 +4,13 @@
 
 DSH itself only talks to the local machine: its web server binds to loopback and it checks where requests come from. This plugin stands in the middle. The phone connects to the plugin's port, clears one password, and the plugin knocks on DSH's door **carrying DSH's own launch token**.
 
-> The companion client — a Flutter app for Android and HarmonyOS — is at
+> The client — a Flutter app for Android and HarmonyOS — is at
 > **[github.com/ns-zzj/dsh-webview-remote](https://github.com/ns-zzj/dsh-webview-remote)**.
-> You do not need it: a phone browser can open the same address and work just as well.
+>
+> **There is no web login page, so a browser cannot get in.** The password travels in a request
+> header (`X-Gateway-Password`), which an address bar cannot send; a browser pointed at the port
+> just gets a bare `401` with nothing to fill in. That is deliberate — see the comments at the
+> top of `lib/gateway.js`. **The client app is the way in from a phone.**
 
 ---
 
@@ -55,9 +59,8 @@ DSH itself only talks to the local machine: its web server binds to loopback and
 2. **Access password** — set one (do not reuse a password from anywhere else)
 3. **Listen port** — pick a port for the gateway (default `8080`; change it if it is taken)
 4. Click **Save**. The status line becomes "**Listening on 0.0.0.0:<port>**"
-5. On the phone:
-   - **With the companion client** — enter `your computer's LAN IP:port` and the password
-   - **Browser only** — open `http://<your computer's LAN IP>:<port>/` and enter the password
+5. On the phone — install the client, then enter `your computer's LAN IP:port` and the password.
+   (A phone browser cannot get in — see the note at the top.)
 6. Back in that panel, "**Connection history**" should have gained an entry
 
 > On Windows, find your LAN IP with `ipconfig` and look for `IPv4 Address` (usually `192.168.x.x`).
@@ -73,7 +76,9 @@ DSH itself only talks to the local machine: its web server binds to loopback and
 | Status | "Listening on 0.0.0.0:port", or "Not started (no password yet)" |
 | Connection history | The most recent **200** entries: **time / platform / address** |
 
-**Why the "platform" column may show `—`.** It comes from a request header the client sends voluntarily. The companion client sends it (Android / HarmonyOS); **a phone browser does not**, so that column stays empty.
+**Why the "platform" column may show `—`.** It comes from a request header the client sends
+voluntarily, and the client app always sends it (Android / HarmonyOS). Anything else you point at
+the port — a script of your own, say — may not, and then that entry stays empty.
 
 **When an entry is written.** Only at the moment the **password check succeeds**. Attempts with a wrong password are **not** recorded.
 
@@ -99,7 +104,7 @@ $DSH_HOME/webview-remote-server/
 
 - **One instance per machine.** The listen port must be free; it fails to start if an old standalone gateway script is holding the same port
 - **Plain HTTP.** Moving to HTTPS means a self-signed certificate plus installing a CA on the phone — this plugin does not do that for you
-- **The platform column depends on the client reporting it.** A phone browser will always show `—`
+- **The platform column depends on the client reporting it.** The client app always does; anything you write yourself may not
 - **Host-side changes require fully quitting and reopening DSH.** Browser-side changes only need a page refresh
 - **A remote client cannot change the configuration** — the panel only renders the form when DSH is on the local machine
 - **Failed authentications are not recorded** in the history
